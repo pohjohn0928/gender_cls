@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<style>
+    body {
+        background-image: url('/static/background.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        opacity: 1;
+    }
+</style>
+
+<script>
+    function getContent() {
+        var content = document.getElementById('content').value
+        var model = document.getElementById('model').value
+        $.ajax({
+            url : '/predictGender',
+            data : {
+                content : content,
+                model : model
+            },
+            type : 'post',
+            success : function (result) {
+                var male_prob = result['result']
+                var other = 1 - male_prob
+
+                var table = '<table class="table table-striped">'
+                table += '<th scope="col">#</th>'
+
+                table += '<th scope="col">' + '男生' + '</th>'
+                table += '<th scope="col">' + '其他' + '</th>'
+
+                table += '<tbody><tr><th scope="row">prob</th>'
+
+                table += '<td><font color="#dc143c">' + male_prob + '</td>'
+                table += '<td><font color="green">' + other + '</td>'
+
+                table += '</tr></tbody>'
+                table += '</table>'
+
+                document.getElementById('result_table').innerHTML = table
+            }
+        })
+    }
+</script>
+
+<body>
+<center><h1>Gender Prediction</h1></center>
+<form>
+    <div class="form-group">
+        <h2><label for="content">Content : </label></h2>
+        <textarea class="form-control" id="content" rows="5" ></textarea>
+    </div>
+    <div class="form-group">
+        <h2><label for="model">model : </label></h2>
+        <select id="model">
+            <option value="albertFineTunning">Albert (fine-tunning)</option>
+            <option value="albertFeatureBase">Albert (feature base) + Passive Aggressive Classifiers</option>
+            <option value="bertSqeCls">Bert Sequence Classifier</option>
+            <option value="PassiveAggressiveModel">tfidf + Passive Aggressive Classifiers</option>
+            <option value="xgboost">tfidf + xgboost</option>
+        </select>
+    </div>
+    <center><button type="button" class="btn btn-primary" onclick="getContent()" style="font-size: 24px">Predict</button></center>
+</form><br>
+
+<div id="result_table"></div>
+</body>
+</html>
