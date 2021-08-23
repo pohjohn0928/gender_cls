@@ -2,7 +2,6 @@
 import pickle
 from enum import Enum
 from typing import Optional
-
 import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -95,4 +94,4 @@ async def read_item(attention_info: AttentionInfo):
 
 
 if __name__ == '__main__':
-    uvicorn.run("fastApi:app", host='127.0.0.1', port=8000)
+    uvicorn.run("fastApi:app", host='0.0.0.0', port=8000)
